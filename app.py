@@ -7,9 +7,12 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback-secret-2025")
 app.permanent_session_lifetime = timedelta(hours=1)
 
-# Конфигурация AI
-AI_API_KEY = os.getenv("AI_API_KEY")
-AI_ENDPOINT = "https://api.openai.com/v1/chat/completions"
+# Конфигурация AI — теперь через OpenRouter.ai
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")  # ⚠️ Переименовали переменную
+AI_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
+
+# Модель Qwen (можно заменить на другую: https://openrouter.ai/models)
+AI_MODEL = "qwen/qwen3-coder:free"  # или "qwen/qwen1.5-72b-chat", "qwen/qwen2-7b-instruct"
 
 # Авторизация
 VALID_USERNAME = os.getenv("APP_USERNAME", "analyst")
@@ -186,7 +189,7 @@ HTML_TEMPLATE = '''
 
     <!-- Блок ИИ — изначально скрыт -->
     <div id="aiSection" class="ai-section">
-        <h2>🤖 Задайте вопрос ИИ-ассистенту</h2>
+        <h2>🤖 Задайте вопрос Qwen (через OpenRouter)</h2>
         <textarea id="userInput" placeholder="Например: Как повлияет рост доллара на рынок?"></textarea>
         <button onclick="askAI()">Отправить запрос</button>
         <div id="aiResponse"></div>
@@ -279,7 +282,7 @@ HTML_TEMPLATE = '''
                 const result = await response.json();
 
                 if (response.ok) {
-                    resDiv.innerHTML = `<p><strong>🤖 Ответ ИИ:</strong><br>${result.reply}</p>`;
+                    resDiv.innerHTML = `<p><strong>🤖 Ответ Qwen:</strong><br>${result.reply}</p>`;
                 } else {
                     resDiv.innerHTML = `<p class="error">❌ ${result.error}</p>`;
                 }
@@ -343,28 +346,31 @@ def ask_ai():
     if not user_message:
         return jsonify({"error": "Empty message"}), 400
 
-    if not AI_API_KEY:
-        return jsonify({"error": "AI API key not configured"}), 500
+    if not OPENROUTER_API_KEY:
+        return jsonify({"error": "OpenRouter API key not configured"}), 500
 
+    # Заголовки, ОБЯЗАТЕЛЬНЫЕ для OpenRouter
     headers = {
-        "Authorization": f"Bearer {AI_API_KEY}",
-        "Content-Type": "application/json"
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://peggy-lee-zorba-ai.onrender.com",  # ⚠️ Замени на свой URL после деплоя
+        "X-Title": "Business Analytics AI Proxy",
     }
 
     data = {
-        "model": "gpt-3.5-turbo",
+        "model": AI_MODEL,
         "messages": [{"role": "user", "content": user_message}],
         "temperature": 0.7
     }
 
     try:
-        response = requests.post(AI_ENDPOINT, json=data, headers=headers, timeout=30)
+        response = requests.post(AI_ENDPOINT, json=data, headers=headers, timeout=60)
         response.raise_for_status()
         result = response.json()
         ai_reply = result["choices"][0]["message"]["content"]
         return jsonify({"reply": ai_reply})
     except Exception as e:
-        return jsonify({"error": f"Ошибка ИИ: {str(e)}"}), 500
+        return jsonify({"error": f"Ошибка Qwen через OpenRouter: {str(e)}"}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 10000))
