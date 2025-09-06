@@ -51,6 +51,22 @@ body {
     color: #2c3e50;
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
 .ai-section {
     background: white;
     padding: 25px;
@@ -87,12 +103,15 @@ button:hover {
     background: #732d91;
 }
 
-#aiResponse {
+.ai-response {
     margin-top: 20px;
     padding: 15px;
     background: #f9f9f9;
     border-left: 4px solid #8e44ad;
     border-radius: 5px;
+    white-space: pre-wrap;       /* Сохраняем переносы строк */
+    word-wrap: break-word;       /* Переносим длинные слова */
+    line-height: 1.6;
 }
 
 .error {

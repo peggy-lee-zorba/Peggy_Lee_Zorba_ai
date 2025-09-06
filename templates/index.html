@@ -14,28 +14,29 @@
 
     <div class="grid">
         <div class="card">
-            <h3>💱 Курсы валют (заглушка)</h3>
-            <ul>
-                <li><strong>USD:</strong> 92.50 ₽</li>
-                <li><strong>EUR:</strong> 101.20 ₽</li>
-                <li><strong>CNY:</strong> 12.80 ₽</li>
-            </ul>
+            <h3>💱 Курсы валют (относительно USD)</h3>
+            <table>
+                <tr><th>Валюта</th><th>Курс</th></tr>
+                {% for curr, rate in rates.items() %}
+                <tr><td>{{ curr }}</td><td>{{ "%.4f"|format(rate) }}</td></tr>
+                {% endfor %}
+            </table>
         </div>
 
         <div class="card">
             <h3>🌤️ Погода (заглушка)</h3>
             <p><strong>Город:</strong> Москва</p>
             <p><strong>Температура:</strong> +18°C</p>
-            <p><strong>Описание:</strong> Облачно, возможен дождь</p>
+            <p><strong>Описание:</strong> Облачно</p>
         </div>
     </div>
 
     <!-- Блок ИИ — изначально скрыт -->
     <div id="aiSection" class="ai-section" style="display: none;">
-        <h2>🤖 Задайте вопрос ИИ-ассистенту</h2>
+        <h2>🤖 Задайте вопрос Qwen (через OpenRouter)</h2>
         <textarea id="userInput" placeholder="Например: Как повлияет рост доллара на рынок?"></textarea>
         <button onclick="askAI()">Отправить запрос</button>
-        <div id="aiResponse"></div>
+        <div id="aiResponse" class="ai-response"></div>
     </div>
 
     <!-- Модальное окно авторизации -->
