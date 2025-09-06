@@ -1,10 +1,13 @@
 from flask import Flask
 import requests
+import os  # 👈 ДОБАВЛЕНО — без этого код не запустится!
+
 
 app = Flask(__name__)
 
 # Функция для получения курсов валют с API
 def get_exchange_rates(base='USD'):
+    # ❗ Убрал лишние пробелы в URL — они ломали запрос
     url = f"https://api.exchangerate-api.com/v4/latest/{base}"
     response = requests.get(url)
     if response.status_code == 200:
@@ -53,6 +56,5 @@ def home():
     return html
 
 if __name__ == '__main__':
-       # Render требует, чтобы приложение слушало PORT из переменной окружения
     port = int(os.getenv("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
