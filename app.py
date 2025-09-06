@@ -10,7 +10,7 @@ app.permanent_session_lifetime = timedelta(hours=1)
 # Конфигурация AI — через OpenRouter.ai
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 AI_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
-AI_MODEL = "qwen/qwen2-72b-instruct"  # или "qwen/qwen1.5-72b-chat"
+AI_MODEL = "qwen/qwen3-coder:free"  # или "qwen/qwen1.5-72b-chat"
 
 # Авторизация
 VALID_USERNAME = os.getenv("APP_USERNAME", "analyst")
@@ -73,7 +73,7 @@ def ask_ai():
     }
 
     data = {
-        "model": "qwen/qwen2-72b-instruct",
+        "model": "qwen/qwen3-coder:free",
         "messages": [{"role": "user", "content": "Привет, ты работаешь?"}],
     }
 
