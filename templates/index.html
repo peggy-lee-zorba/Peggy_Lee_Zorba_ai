@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Business Analytics Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>📈 Business Analytics Dashboard</h1>
+        <button id="signInBtn" class="btn">🔐 Sign In</button>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>💱 Курсы валют (заглушка)</h3>
+            <ul>
+                <li><strong>USD:</strong> 92.50 ₽</li>
+                <li><strong>EUR:</strong> 101.20 ₽</li>
+                <li><strong>CNY:</strong> 12.80 ₽</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>🌤️ Погода (заглушка)</h3>
+            <p><strong>Город:</strong> Москва</p>
+            <p><strong>Температура:</strong> +18°C</p>
+            <p><strong>Описание:</strong> Облачно, возможен дождь</p>
+        </div>
+    </div>
+
+    <!-- Блок ИИ — изначально скрыт -->
+    <div id="aiSection" class="ai-section" style="display: none;">
+        <h2>🤖 Задайте вопрос ИИ-ассистенту</h2>
+        <textarea id="userInput" placeholder="Например: Как повлияет рост доллара на рынок?"></textarea>
+        <button onclick="askAI()">Отправить запрос</button>
+        <div id="aiResponse"></div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>🔐 Вход для аналитиков</h3>
+            <p>Регистрация отключена. Только для авторизованных пользователей.</p>
+            <input type="text" id="username" placeholder="Логин" required>
+            <input type="password" id="password" placeholder="Пароль" required>
+            <button onclick="submitLogin()">Войти</button>
+            <div id="loginError" class="error"></div>
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
