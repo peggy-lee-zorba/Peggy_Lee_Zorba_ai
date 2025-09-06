@@ -62,41 +62,30 @@ def login():
 
 @app.route("/ask-ai", methods=["POST"])
 def ask_ai():
-    if "user" not in session:
-        return jsonify({"error": "Unauthorized"}), 401
-
-    user_message = request.json.get("message", "").strip()
-    if not user_message:
-        return jsonify({"error": "Empty message"}), 400
-
     if not OPENROUTER_API_KEY:
-        return jsonify({"error": "OpenRouter API key not configured"}), 500
+        return jsonify({"error": "API key missing"}), 500
 
-    # Обязательные заголовки для OpenRouter
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://peggy-lee-zorba-ai.onrender.com",  # ⚠️ Замени после деплоя!
-        "X-Title": "Business Analytics AI Proxy",
+        "HTTP-Referer": "https://peggy-lee-zorba-ai.onrender.com",  # ЗАМЕНИ НА СВОЙ!
+        "X-Title": "Test App",
     }
 
     data = {
-        "model": AI_MODEL,
-        "messages": [{"role": "user", "content": user_message}],
-        "temperature": 0.7
+        "model": "qwen/qwen2-72b-instruct",
+        "messages": [{"role": "user", "content": "Привет, ты работаешь?"}],
     }
 
     try:
-        response = requests.post(AI_ENDPOINT, json=data, headers=headers, timeout=60)
+        response = requests.post(AI_ENDPOINT, json=data, headers=headers, timeout=30)
+        print("Статус:", response.status_code)
+        print("Ответ:", response.text)  # 👈 Важно для дебага!
         response.raise_for_status()
         result = response.json()
-        ai_reply = result["choices"][0]["message"]["content"]
-
-        # Возвращаем как есть — с форматированием (поддержка Markdown/HTML в фронтенде)
-        return jsonify({"reply": ai_reply})
-
+        return jsonify({"reply": result["choices"][0]["message"]["content"]})
     except Exception as e:
-        return jsonify({"error": f"Ошибка Qwen через OpenRouter: {str(e)}"}), 500
+        return jsonify({"error": f"OpenRouter Error: {str(e)} | Response: {response.text if 'response' in locals() else 'No response'}"}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 10000))
