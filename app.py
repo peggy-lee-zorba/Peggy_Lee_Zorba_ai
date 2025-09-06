@@ -1,67 +1,56 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask
 import requests
-import os
-from datetime import timedelta
 
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "super-secret-dev-key-2025")
-app.permanent_session_lifetime = timedelta(hours=1)
 
-# Конфигурация AI
-AI_API_KEY = os.getenv("AI_API_KEY")
-AI_ENDPOINT = "https://api.openai.com/v1/chat/completions"
-
-# Авторизация (в продакшене — вынести в БД или .env)
-VALID_USERNAME = os.getenv("APP_USERNAME", "analyst")
-VALID_PASSWORD = os.getenv("APP_PASSWORD", "securepass")
-
-@app.route("/")
-def index():
-    # Всегда показываем главную страницу
-    # Состояние авторизации передаём в шаблон
-    is_authorized = "user" in session
-    return render_template("index.html", is_authorized=is_authorized)
-
-@app.route("/login", methods=["POST"])
-def login():
-    data = request.get_json()
-    username = data.get("username")
-    password = data.get("password")
-
-    if username == VALID_USERNAME and password == VALID_PASSWORD:
-        session["user"] = username
-        return jsonify({"success": True})
+# Функция для получения курсов валют с API
+def get_exchange_rates(base='USD'):
+    url = f"https://api.exchangerate-api.com/v4/latest/{base}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return data['rates']
     else:
-        return jsonify({"success": False, "error": "Неверный логин или пароль"}), 401
+        return None
 
-@app.route("/ask-ai", methods=["POST"])
-def ask_ai():
-    if "user" not in session:
-        return jsonify({"error": "Unauthorized"}), 401
+@app.route('/')
+def home():
+    rates = get_exchange_rates()
+    if rates is None:
+        return "<h1>Ошибка: Не удалось получить данные о курсах валют.</h1>"
 
-    user_message = request.json.get("message", "").strip()
-    if not user_message:
-        return jsonify({"error": "Empty message"}), 400
+    # Простой HTML для отображения
+    html = """
+    <html>
+    <head>
+        <title>Курсы валют</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { border-collapse: collapse; width: 50%; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f2f2f2; }
+        </style>
+    </head>
+    <body>
+        <h1>Курсы валют относительно USD</h1>
+        <p>Данные обновляются при перезагрузке страницы.</p>
+        <table>
+            <tr><th>Валюта</th><th>Курс к 1 USD</th></tr>
+    """
 
-    headers = {
-        "Authorization": f"Bearer {AI_API_KEY}",
-        "Content-Type": "application/json"
-    }
+    # Добавляем несколько популярных валют (можно расширить)
+    currencies = ['EUR', 'RUB', 'GBP', 'JPY', 'CNY', 'BTC']  # Примеры
+    for currency in currencies:
+        if currency in rates:
+            html += f"<tr><td>{currency}</td><td>{rates[currency]:.4f}</td></tr>"
 
-    data = {
-        "model": "gpt-3.5-turbo",
-        "messages": [{"role": "user", "content": user_message}],
-        "temperature": 0.7
-    }
+    html += """
+        </table>
+    </body>
+    </html>
+    """
 
-    try:
-        response = requests.post(AI_ENDPOINT, json=data, headers=headers, timeout=30)
-        response.raise_for_status()
-        result = response.json()
-        ai_reply = result["choices"][0]["message"]["content"]
-        return jsonify({"reply": ai_reply})
-    except Exception as e:
-        return jsonify({"error": f"Ошибка ИИ: {str(e)}"}), 500
+    return html
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.getenv("PORT", 10000)))
+if __name__ == '__main__':
+    app.run(debug=True)
