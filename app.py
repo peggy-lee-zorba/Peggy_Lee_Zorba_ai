@@ -53,4 +53,6 @@ def home():
     return html
 
 if __name__ == '__main__':
-    app.run(debug=True)
+       # Render требует, чтобы приложение слушало PORT из переменной окружения
+    port = int(os.getenv("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
