@@ -11,7 +11,8 @@ app.permanent_session_lifetime = timedelta(hours=1)
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 AI_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
 #AI_MODEL = "qwen/qwen3-coder:free"
-AI_MODEL = os.getenv("AI_MODEL", "qwen/qwen3-coder:free")
+#AI_MODEL = os.getenv("AI_MODEL", "qwen/qwen3-coder:free")
+AI_MODEL = os.getenv("AI_MODEL", "deepseek/deepseek-chat")
 
 # Авторизация
 VALID_USERNAME = os.getenv("APP_USERNAME", "analyst")
@@ -106,7 +107,7 @@ def ask_ai():
         return jsonify({"error": "Unauthorized"}), 401
 
     if not OPENROUTER_API_KEY:
-        return jsonify({"error": "API key missing"}), 500
+        return jsonify({"error": "OpenRouter API key missing"}), 500
 
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -115,22 +116,47 @@ def ask_ai():
         "X-Title": "Business Analytics AI Proxy",
     }
 
-    user_message = request.json.get("message", "Привет, ты работаешь?")
+    user_message = request.json.get("message", "Привет! Как ты можешь помочь с бизнес-аналитикой?")
+
+    # Системный промпт для бизнес-аналитики
+    system_prompt = """Ты - AI ассистент для бизнес-аналитики. Ты помогаешь с:
+- Анализом финансовых данных и курсов валют
+- Бизнес-прогнозированием и аналитикой
+- Интерпретацией экономических тенденций
+- Советами по бизнес-решениям
+
+Отвечай профессионально, но доступно. Используй данные, когда они доступны.
+Форматируй ответы четко с использованием заголовков и списков где уместно."""
 
     data = {
         "model": AI_MODEL,
-        "messages": [{"role": "user", "content": user_message}],
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_message}
+        ],
+        "temperature": 0.7,
+        "max_tokens": 2000
     }
 
     try:
         response = requests.post(AI_ENDPOINT, json=data, headers=headers, timeout=30)
         response.raise_for_status()
         result = response.json()
-        return jsonify({"reply": result["choices"][0]["message"]["content"]})
-    except Exception as e:
+        
+        if "choices" in result and len(result["choices"]) > 0:
+            ai_reply = result["choices"][0]["message"]["content"]
+            return jsonify({"reply": ai_reply})
+        else:
+            return jsonify({"error": "Invalid response format from AI"}), 500
+            
+    except requests.exceptions.Timeout:
+        return jsonify({"error": "AI request timeout"}), 504
+    except requests.exceptions.RequestException as e:
         error_detail = response.text if 'response' in locals() else 'No response'
-        return jsonify({"error": f"OpenRouter Error: {str(e)} | Response: {error_detail}"}), 500
-
+        return jsonify({"error": f"OpenRouter Error: {str(e)}"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+    
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

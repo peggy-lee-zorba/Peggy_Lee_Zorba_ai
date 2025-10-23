@@ -77,9 +77,10 @@ async function askAI() {
         } else {
             resDiv.innerHTML = `<p class="error">❌ ${result.error}</p>`;
         }
-    } catch (err) {
-        resDiv.innerHTML = `<p class="error">❌ Ошибка сети</p>`;
-    } finally {
+} catch (err) {
+        console.error("AI Request error:", err);
+        resDiv.innerHTML = `<p class="error">❌ Ошибка при обращении к AI. Пожалуйста, попробуйте позже.</p>`;
+} finally {
         if (btn) {
             btn.disabled = false;
             btn.classList.remove('loading');
