@@ -8,8 +8,8 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback-secret-2025")
 app.permanent_session_lifetime = timedelta(hours=1)
 
 # Конфигурация контекста
-MAX_CONTEXT_MESSAGES = 10  # Максимальное количество пар сообщений (user + assistant)
-MAX_CONTEXT_LENGTH = 4000  # Максимальная длина контекста в символах
+MAX_CONTEXT_MESSAGES = 6  # Максимальное количество пар сообщений (user + assistant)
+MAX_CONTEXT_LENGTH = 16000  # Максимальная длина контекста в символах
 
 # Конфигурация AI — через OpenRouter.ai
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
