@@ -57,6 +57,7 @@ async function askAI() {
     if (!btn || !resDiv) return;
 
     btn.disabled = true;
+    btn.classList.add('loading');
     btn.innerText = "⏳ Думаю...";
 
     resDiv.innerHTML = "<p>Обрабатываю запрос...</p>";
@@ -81,6 +82,7 @@ async function askAI() {
     } finally {
         if (btn) {
             btn.disabled = false;
+            btn.classList.remove('loading');
             btn.innerText = "Отправить запрос";
         }
     }
