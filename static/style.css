@@ -19,20 +19,17 @@ body {
 }
 
 .btn {
-    padding: 10px 24px;
+    padding: 10px 20px;
     background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
     color: white;
     border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
-    transition: all .2s;
+    border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
 }
 
 .btn:hover {
-  box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.46);
-  transform: translateY(-1px);
+    background: #2980b9;
 }
 
 .grid {
@@ -45,14 +42,8 @@ body {
 .card {
     background: white;
     padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.05), 0 6px 20px rgba(0,0,0,.04);
-    transition: transform .2s, box-shadow .2s;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0,0,0,.08);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .card h3 {
@@ -94,16 +85,9 @@ textarea {
     height: 80px;
     padding: 10px;
     margin: 10px 0;
-    border: none;
-    border-bottom: 2px solid #D1D5DB;
-    background: transparent;
-    border-radius: 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
     resize: vertical;
-}
-
-input:focus, textarea:focus {
-  border-bottom-color: #4F46E5;
-  outline: none;
 }
 
 button {
@@ -144,9 +128,7 @@ button:hover {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,.24);
-    backdrop-filter: blur(8px);
-    animation: fadeIn .3s ease;
+    background-color: rgba(0,0,0,0.5);
 }
 
 .modal-content {
@@ -157,8 +139,6 @@ button:hover {
     width: 350px;
     border-radius: 10px;
     text-align: center;
-    transform: translateY(20px);
-    animation: slideUp .3s ease forwards;
 }
 
 .close {
@@ -174,6 +154,3 @@ button:hover {
 }
 
 :root { --success: #10B981; }
-
-@keyframes fadeIn { from {opacity:0} to {opacity:1} }
-@keyframes slideUp { to {transform:translateY(0)} }

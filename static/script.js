@@ -30,11 +30,6 @@ async function submitLogin() {
             body: JSON.stringify({ username, password })
         });
 
-        const td = row.querySelector('td:last-child');
-        const final = parseFloat(td.textContent);
-        td.textContent = '0.0000';
-        animateValue(td, 0, final, 800);
-
         const result = await response.json();
 
         if (result.success) {
@@ -89,15 +84,4 @@ async function askAI() {
             btn.innerText = "Отправить запрос";
         }
     }
-}
-
-function animateValue(el, start, end, duration) {
-  const range = end - start; let startTime = null;
-  const step = t => {
-    if (!startTime) startTime = t;
-    const p = Math.min((t - startTime) / duration, 1);
-    el.textContent = (start + range * p).toFixed(4);
-    if (p < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
 }
