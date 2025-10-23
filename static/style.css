@@ -1,9 +1,9 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fa;
+    font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #F8F9FC;
     margin: 0;
     padding: 20px;
-    color: #333;
+    color: #111827;
 }
 
 .header {
@@ -20,7 +20,7 @@ body {
 
 .btn {
     padding: 10px 20px;
-    background: #3498db;
+    background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
     color: white;
     border: none;
     border-radius: 5px;
@@ -152,3 +152,5 @@ button:hover {
 .close:hover {
     color: #000;
 }
+
+:root { --success: #10B981; }
