@@ -3,401 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔐 Вход — Business Analytics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>🧘‍♀️ Вход — Business Analytics</title>
+    <link rel="stylesheet" href="/static/style.css">
     <style>
-        /* Material Design 3 Login Page */
-        :root {
-            --md-primary: #6750A4;
-            --md-primary-container: #EADDFF;
-            --md-on-primary: #FFFFFF;
-            --md-on-primary-container: #21005D;
-            --md-surface: #FEF7FF;
-            --md-on-surface: #1C1B1F;
-            --md-on-surface-variant: #49454F;
-            --md-outline: #79747E;
-            --md-outline-variant: #CAC4D0;
-            --md-error: #B3261E;
-            --md-error-container: #F9DEDC;
-            --md-on-error-container: #410E0B;
-            --md-elevation-2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
-        }
-
-        * {
+        /* Стиль Headspace: спокойный, минималистичный, с мягкими формами */
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #6750A4 0%, #4F378B 100%);
-            min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Animated background elements */
-        body::before {
-            content: '';
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-            top: -200px;
-            right: -200px;
-            animation: float 20s ease-in-out infinite;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 50%;
-            bottom: -150px;
-            left: -150px;
-            animation: float 15s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, -30px) scale(1.1); }
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
         }
 
         .login-container {
-            background: var(--md-surface);
-            padding: 48px 40px;
-            border-radius: 28px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             width: 100%;
-            max-width: 440px;
+            max-width: 420px;
             text-align: center;
-            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            z-index: 1;
+            animation: fadeIn 0.6s ease;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .logo-container {
-            margin-bottom: 24px;
-            position: relative;
+        .login-container h2 {
+            margin: 0 0 30px 0;
+            font-size: 28px;
+            font-weight: 600;
+            color: #2d4a6a;
+            letter-spacing: -0.5px;
         }
 
-        .logo {
-            width: 80px;
-            height: 80px;
-            background: var(--md-primary-container);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 16px;
-            box-shadow: var(--md-elevation-2);
-        }
-
-        .logo .material-icons {
-            font-size: 40px;
-            color: var(--md-primary);
-        }
-
-        h2 {
-            font-size: 32px;
-            font-weight: 400;
-            color: var(--md-on-surface);
-            margin-bottom: 8px;
-            letter-spacing: 0;
-        }
-
-        .subtitle {
-            color: var(--md-on-surface-variant);
-            font-size: 16px;
-            line-height: 24px;
-            margin-bottom: 32px;
-        }
-
-        .error-banner {
-            background: var(--md-error-container);
-            color: var(--md-on-error-container);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-align: left;
-            animation: shake 0.5s ease;
-            border-left: 4px solid var(--md-error);
-        }
-
-        .error-banner .material-icons {
-            color: var(--md-error);
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .input-field {
-            position: relative;
-        }
-
-        .input-field .material-icons {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--md-on-surface-variant);
-            font-size: 20px;
-            transition: color 0.2s;
+        .login-container p {
+            margin: 15px 0;
+            color: #666;
+            line-height: 1.6;
         }
 
         input {
             width: 100%;
-            padding: 16px 16px 16px 48px;
-            font-size: 16px;
-            font-family: 'Roboto', sans-serif;
-            color: var(--md-on-surface);
-            background: var(--md-surface);
-            border: 1px solid var(--md-outline);
+            padding: 14px;
+            margin: 12px 0;
+            border: 2px solid #e1e8ed;
             border-radius: 12px;
+            font-size: 16px;
+            transition: border 0.3s ease;
             outline: none;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         input:focus {
-            border-color: var(--md-primary);
-            border-width: 2px;
-            padding-left: 47px;
-            box-shadow: 0 0 0 4px rgba(103, 80, 164, 0.1);
+            border-color: #6c63ff;
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
         }
 
-        input:focus + .material-icons {
-            color: var(--md-primary);
-        }
-
-        input::placeholder {
-            color: var(--md-on-surface-variant);
-            opacity: 0.7;
-        }
-
-        .button-primary {
+        button {
             width: 100%;
             padding: 16px;
-            margin-top: 8px;
-            background: var(--md-primary);
-            color: var(--md-on-primary);
+            margin-top: 10px;
+            background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+            color: white;
             border: none;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: 500;
-            letter-spacing: 0.1px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--md-elevation-2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            position: relative;
-            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
         }
 
-        .button-primary:hover {
-            background: color-mix(in srgb, var(--md-primary) 92%, white);
-            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3), 0px 4px 12px 4px rgba(0, 0, 0, 0.15);
-            transform: translateY(-1px);
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
         }
 
-        .button-primary:active {
+        button:active {
             transform: translateY(0);
         }
 
-        .button-primary:disabled {
-            background: var(--md-outline-variant);
-            color: var(--md-on-surface-variant);
-            cursor: not-allowed;
-            box-shadow: none;
-            transform: none;
-        }
-
-        .footer-text {
-            margin-top: 24px;
-            color: var(--md-on-surface-variant);
-            font-size: 14px;
-            line-height: 20px;
-        }
-
-        .footer-text a {
-            color: var(--md-primary);
-            text-decoration: none;
+        .error {
+            background: #fff5f5;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
             font-weight: 500;
+            border: 1px solid #f0d0d0;
+            animation: shake 0.5s ease;
         }
 
-        .footer-text a:hover {
-            text-decoration: underline;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
-        /* Loading spinner */
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .logo {
+            margin-bottom: 30px;
+            font-size: 42px;
+            color: #6c63ff;
+            font-weight: 700;
+            letter-spacing: -1px;
         }
 
         @media (max-width: 480px) {
             .login-container {
-                padding: 32px 24px;
+                margin: 20px;
+                padding: 30px 20px;
             }
-
-            h2 {
-                font-size: 28px;
-            }
-
-            .logo {
-                width: 64px;
-                height: 64px;
-            }
-
-            .logo .material-icons {
-                font-size: 32px;
-            }
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --md-primary: #D0BCFF;
-                --md-primary-container: #4F378B;
-                --md-on-primary: #371E73;
-                --md-on-primary-container: #EADDFF;
-                --md-surface: #1C1B1F;
-                --md-on-surface: #E6E1E5;
-                --md-on-surface-variant: #CAC4D0;
-                --md-outline: #938F99;
+            .login-container h2 {
+                font-size: 24px;
             }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="logo-container">
-            <div class="logo">
-                <span class="material-icons">psychology</span>
-            </div>
-            <h2>Вход в систему</h2>
-            <p class="subtitle">Business Analytics Dashboard</p>
-        </div>
+        <div class="logo">🧠</div>
+        <h2>Войдите в систему</h2>
+        <p>Доступ только для авторизованных аналитиков</p>
 
         {% if error %}
-        <div class="error-banner">
-            <span class="material-icons">error</span>
-            <span>{{ error }}</span>
-        </div>
+            <div class="error">{{ error }}</div>
         {% endif %}
 
-        <form method="POST" onsubmit="handleSubmit(event)">
-            <div class="input-group">
-                <div class="input-field">
-                    <input 
-                        type="text" 
-                        name="username" 
-                        id="username"
-                        placeholder="Логин" 
-                        required 
-                        autocomplete="username"
-                        aria-label="Логин"
-                    >
-                    <span class="material-icons">person</span>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <div class="input-field">
-                    <input 
-                        type="password" 
-                        name="password" 
-                        id="password"
-                        placeholder="Пароль" 
-                        required 
-                        autocomplete="current-password"
-                        aria-label="Пароль"
-                    >
-                    <span class="material-icons">lock</span>
-                </div>
-            </div>
-
-            <button type="submit" class="button-primary" id="submitBtn">
-                <span class="material-icons">login</span>
-                <span>Войти</span>
-            </button>
-        </form>
-
-        <p class="footer-text">
-            Только для авторизованных пользователей<br>
-            <a href="/">← Вернуться на главную</a>
-        </p>
-    </div>
-
-    <script>
-        function handleSubmit(event) {
-            event.preventDefault();
-            const form = event.target;
-            const submitBtn = document.getElementById('submitBtn');
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (!username || !password) {
-                return;
-            }
-
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `
-                <span class="spinner"></span>
-                <span>Проверка...</span>
-            `;
-
-            // Submit form
-            form.submit();
-        }
-
-        // Focus first input on load
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('username')?.focus();
-        });
-    </script>
-</body>
-</html>
+        <form method="POST" onsubmit="return validateForm(event)">
+            <input type="text" name="username" placeholder="Логин" required autocomplete="username">
+            <input type="password" name="password" placeholder="Пароль" required autocomplete
