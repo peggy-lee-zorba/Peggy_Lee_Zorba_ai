@@ -7,6 +7,10 @@ app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback-secret-2025")
 app.permanent_session_lifetime = timedelta(hours=1)
 
+# Конфигурация контекста
+MAX_CONTEXT_MESSAGES = 10  # Максимальное количество пар сообщений (user + assistant)
+MAX_CONTEXT_LENGTH = 4000  # Максимальная длина контекста в символах
+
 # Конфигурация AI — через OpenRouter.ai
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 AI_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
@@ -109,14 +113,20 @@ def ask_ai():
     if not OPENROUTER_API_KEY:
         return jsonify({"error": "OpenRouter API key missing"}), 500
 
+    # Инициализируем историю сообщений в сессии
+    if "message_history" not in session:
+        session["message_history"] = []
+
+    user_message = request.json.get("message", "").strip()
+    if not user_message:
+        return jsonify({"error": "Empty message"}), 400
+
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
         "HTTP-Referer": "https://peggy-lee-zorba-ai.onrender.com",
         "X-Title": "Business Analytics AI Proxy",
     }
-
-    user_message = request.json.get("message", "Привет! Как ты можешь помочь с бизнес-аналитикой?")
 
     # Системный промпт для бизнес-аналитики
     system_prompt = """Ты - AI ассистент для бизнес-аналитики. Ты помогаешь с:
@@ -128,12 +138,25 @@ def ask_ai():
 Отвечай профессионально, но доступно. Используй данные, когда они доступны.
 Форматируй ответы четко с использованием заголовков и списков где уместно."""
 
+    # Проверяем, не превышен ли лимит контекста
+    context_warning = False
+    current_context_size = sum(len(msg["content"]) for msg in session["message_history"])
+    
+    if len(session["message_history"]) >= MAX_CONTEXT_MESSAGES * 2:
+        context_warning = True
+        # Автоматически очищаем старые сообщения, оставляя первые 2 и последние 4
+        _cleanup_message_history(session["message_history"])
+
+    # Добавляем новое сообщение пользователя в историю
+    session["message_history"].append({"role": "user", "content": user_message})
+    
+    # Подготавливаем сообщения для отправки
+    messages = [{"role": "system", "content": system_prompt}]
+    messages.extend(session["message_history"])
+    
     data = {
         "model": AI_MODEL,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_message}
-        ],
+        "messages": messages,
         "temperature": 0.7,
         "max_tokens": 2000
     }
@@ -145,7 +168,20 @@ def ask_ai():
         
         if "choices" in result and len(result["choices"]) > 0:
             ai_reply = result["choices"][0]["message"]["content"]
-            return jsonify({"reply": ai_reply})
+            
+            # Добавляем ответ AI в историю
+            session["message_history"].append({"role": "assistant", "content": ai_reply})
+            
+            # Очищаем старую историю, если превышен лимит
+            _cleanup_message_history(session["message_history"])
+            
+            session.modified = True
+            
+            return jsonify({
+                "reply": ai_reply, 
+                "context_warning": context_warning,
+                "context_size": len(session["message_history"])
+            })
         else:
             return jsonify({"error": "Invalid response format from AI"}), 500
             
@@ -156,7 +192,51 @@ def ask_ai():
         return jsonify({"error": f"OpenRouter Error: {str(e)}"}), 500
     except Exception as e:
         return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
+
+def _cleanup_message_history(message_history):
+    """Очищает историю сообщений при превышении лимита"""
+    if len(message_history) > MAX_CONTEXT_MESSAGES * 2:
+        # Оставляем первые 2 сообщения (начало разговора) и последние сообщения
+        important_messages = message_history[:2]
+        recent_messages = message_history[-(MAX_CONTEXT_MESSAGES * 2 - 2):]
+        message_history.clear()
+        message_history.extend(important_messages + recent_messages)
     
+    # Дополнительная оптимизация по длине
+    total_length = sum(len(msg["content"]) for msg in message_history)
+    while total_length > MAX_CONTEXT_LENGTH and len(message_history) > 4:
+        # Удаляем самые старые сообщения (кроме первых двух)
+        if len(message_history) > 2:
+            removed_msg = message_history.pop(2)
+            total_length -= len(removed_msg["content"])
+        else:
+            break
+
+@app.route("/clear-context", methods=["POST"])
+def clear_context():
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    # Очищаем историю сообщений
+    if "message_history" in session:
+        session.pop("message_history")
+    
+    session.modified = True
+    return jsonify({"success": True, "message": "Контекст очищен"})
+
+@app.route("/context-info", methods=["GET"])
+def context_info():
+    """Возвращает информацию о текущем контексте"""
+    if "user" not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+    
+    context_size = len(session.get("message_history", []))
+    return jsonify({
+        "context_size": context_size,
+        "max_context": MAX_CONTEXT_MESSAGES * 2,
+        "percentage": min(100, int((context_size / (MAX_CONTEXT_MESSAGES * 2)) * 100))
+    })
+
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

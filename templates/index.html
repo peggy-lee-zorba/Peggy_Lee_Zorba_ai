@@ -46,25 +46,45 @@
 </div>
 
     <!-- Блок ИИ — изначально скрыт -->
+    <!-- Блок ИИ — изначально скрыт -->
     <div id="aiSection" class="ai-section" style="display: none;">
-        <h2>🤖 Задайте вопрос Qwen (через OpenRouter)</h2>
+        <h2>🤖 Задайте вопрос DeepSeek (через OpenRouter)</h2>
+        
+        <div id="contextInfo" style="margin-bottom: 15px; display: none;">
+            <div style="font-size: 12px; color: #6B7280; margin-bottom: 5px;">
+                💭 Контекст: <span id="contextSize">0</span>/<span id="maxContext">16</span> сообщений
+            </div>
+            <div style="height: 4px; background: #E5E7EB; border-radius: 2px; overflow: hidden;">
+                <div id="contextProgress" style="height: 100%; background: #10B981; width: 0%; transition: width 0.3s;"></div>
+            </div>
+        </div>
+
+        <div id="contextWarning" class="warning-banner" style="display: none;">
+            ⚠️ Контекст почти исчерпан! При следующем запросе старые сообщения будут автоматически удалены.
+        </div>
+
         <textarea id="userInput" placeholder="Например: Как повлияет рост доллара на рынок?"></textarea>
-        <button onclick="askAI()" class="btn">📤 Отправить запрос</button>
+        
+        <div style="display: flex; gap: 10px; margin: 10px 0;">
+            <button onclick="askAI()" class="btn">📤 Отправить запрос</button>
+            <button onclick="clearContext()" class="btn" style="background: #6B7280;">🔄 Очистить контекст</button>
+        </div>
+        
         <div id="aiResponse" class="ai-response"></div>
     </div>
 
     <!-- Модальное окно авторизации -->
     <div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3 style="margin-bottom: 8px;">🔐 Вход для аналитиков</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 24px;">Доступ только для авторизованных пользователей</p>
-        <input type="text" id="username" placeholder="Логин" required>
-        <input type="password" id="password" placeholder="Пароль" required>
-        <button onclick="submitLogin()" class="btn" style="width: 100%; justify-content: center;">Войти</button>
-        <div id="loginError" class="error"></div>
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3 style="margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">🔐 Вход для аналитиков</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;">Доступ только для авторизованных пользователей</p>
+            <input type="text" id="username" placeholder="Логин" required>
+            <input type="password" id="password" placeholder="Пароль" required>
+            <button onclick="submitLogin()" class="btn" style="width: 100%; justify-content: center; margin-top: 16px;">Войти</button>
+            <div id="loginError" class="error"></div>
+        </div>
     </div>
-</div>
 
     <script src="/static/script.js"></script>
 </body>
