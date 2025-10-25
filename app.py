@@ -94,23 +94,22 @@ def get_exchange_rates(base='USD'):
 # ========================
 # Функция для получения погоды через Open-Meteo (без API ключа)
 # ========================
-def get_weather_by_city_name(city='Moscow'):
+def get_weather_by_city_name(city='St. Petersburg'):
     """
     Получает координаты города и затем погоду
     Использует Open-Meteo API - без регистрации!
     """
     # Маппинг популярных городов к координатам
     city_coords = {
-        'moscow': {'lat': 55.7558, 'lon': 37.6173, 'name': 'Москва'},
         'saint petersburg': {'lat': 59.9343, 'lon': 30.3351, 'name': 'Санкт-Петербург'},
+        'moscow': {'lat': 55.7558, 'lon': 37.6173, 'name': 'Москва'},
         'london': {'lat': 51.5074, 'lon': -0.1278, 'name': 'Лондон'},
         'new york': {'lat': 40.7128, 'lon': -74.0060, 'name': 'Нью-Йорк'},
         'paris': {'lat': 48.8566, 'lon': 2.3522, 'name': 'Париж'},
         'berlin': {'lat': 52.5200, 'lon': 13.4050, 'name': 'Берлин'},
         'tokyo': {'lat': 35.6762, 'lon': 139.6503, 'name': 'Токио'},
         'beijing': {'lat': 39.9042, 'lon': 116.4074, 'name': 'Пекин'},
-        'dubai': {'lat': 25.2048, 'lon': 55.2708, 'name': 'Дубай'},
-        'sydney': {'lat': -33.8688, 'lon': 151.2093, 'name': 'Сидней'},
+        'kannelyarvi': {'lat': 29.363479, 'lon': 60.339183, 'name': 'Каннельярви'},
     }
     
     city_lower = city.lower()
