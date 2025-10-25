@@ -361,3 +361,70 @@ input:focus {
     color: #6B7280;
     margin-bottom: 12px;
 }
+
+/* Иконки валют */
+.currency-item::before {
+    content: '💵';
+    margin-right: 8px;
+    opacity: 0.6;
+}
+
+/* Анимация появления карточек */
+.card {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Улучшенный hover для строк таблицы */
+tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+    background-color: rgba(99, 102, 241, 0.05);
+}
+
+/* Стили для флагов валют */
+.currency-flag {
+    font-size: 18px;
+    margin-right: 8px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.currency-code {
+    font-weight: 600;
+    color: var(--text-primary);
+    vertical-align: middle;
+}
+
+/* Анимация при hover */
+tbody tr:hover .currency-flag {
+    transform: scale(1.2);
+    transition: transform 0.2s ease;
+}
+
+/* Индикаторы тренда */
+.rate-trend {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 12px;
+}
+
+.rate-trend.up {
+    color: #10B981;
+}
+
+.rate-trend.down {
+    color: #EF4444;
+}

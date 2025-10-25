@@ -48,22 +48,48 @@ VALID_PASSWORD = os.getenv("APP_PASSWORD", "securepass")
 # ========================
 def get_exchange_rates(base='USD'):
     url = f"https://api.exchangerate-api.com/v4/latest/{base}"
+    
+    # Маппинг валют к флагам
+    currency_flags = {
+        'EUR': '🇪🇺',  # Европейский союз
+        'GBP': '🇬🇧',  # Великобритания
+        'JPY': '🇯🇵',  # Япония
+        'CNY': '🇨🇳',  # Китай
+        'CAD': '🇨🇦',  # Канада
+        'AUD': '🇦🇺',  # Австралия
+        'CHF': '🇨🇭',  # Швейцария
+        'RUB': '🇷🇺',  # Россия
+        'INR': '🇮🇳',  # Индия
+        'BRL': '🇧🇷',  # Бразилия
+    }
+    
     try:
         response = requests.get(url, timeout=10)
         if response.status_code == 200:
             data = response.json()
             rates = data.get('rates', {})
             top_currencies = ['EUR', 'GBP', 'JPY', 'CNY', 'CAD', 'AUD', 'CHF', 'RUB', 'INR', 'BRL']
-            filtered_rates = {curr: rates[curr] for curr in top_currencies if curr in rates}
+            filtered_rates = {
+                curr: {'rate': rates[curr], 'flag': currency_flags.get(curr, '🏳️')} 
+                for curr in top_currencies if curr in rates
+            }
             return filtered_rates
     except Exception as e:
         print(f"Ошибка получения курсов: {e}")
+    
+    # Fallback данные с флагами
     return {
-        "EUR": 0.92, "GBP": 0.79, "JPY": 155.3, "CNY": 7.25,
-        "CAD": 1.37, "AUD": 1.52, "CHF": 0.89, "RUB": 92.5,
-        "INR": 83.4, "BRL": 5.12
+        "EUR": {'rate': 0.92, 'flag': '🇪🇺'},
+        "GBP": {'rate': 0.79, 'flag': '🇬🇧'},
+        "JPY": {'rate': 155.3, 'flag': '🇯🇵'},
+        "CNY": {'rate': 7.25, 'flag': '🇨🇳'},
+        "CAD": {'rate': 1.37, 'flag': '🇨🇦'},
+        "AUD": {'rate': 1.52, 'flag': '🇦🇺'},
+        "CHF": {'rate': 0.89, 'flag': '🇨🇭'},
+        "RUB": {'rate': 92.5, 'flag': '🇷🇺'},
+        "INR": {'rate': 83.4, 'flag': '🇮🇳'},
+        "BRL": {'rate': 5.12, 'flag': '🇧🇷'},
     }
-
 # ========================
 # Роуты
 # ========================

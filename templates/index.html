@@ -22,8 +22,14 @@
                 <tr><th>Валюта</th><th>Курс</th></tr>
             </thead>
             <tbody>
-                {% for curr, rate in rates.items() %}
-                <tr><td>{{ curr }}</td><td>{{ "%.4f"|format(rate) }}</td></tr>
+                {% for curr, data in rates.items() %}
+                <tr>
+                    <td>
+                        <span class="currency-flag">{{ data.flag }}</span>
+                        <span class="currency-code">{{ curr }}</span>
+                    </td>
+                    <td>{{ "%.4f"|format(data.rate) }}</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
