@@ -78,7 +78,7 @@ body {
 
 .card {
     background: var(--surface);
-    padding: 28px;
+    padding: 16px 20px;  /* Компактный padding */
     border-radius: 16px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
@@ -86,31 +86,32 @@ body {
 }
 
 .card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
 
 .card h3 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 20px;
+    margin-bottom: 8px;  /* Минимальный отступ */
     color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-/* Tables */
+/* Компактная таблица валют */
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 12px;
+    margin-top: 0;  /* Убираем отступ сверху */
 }
 
 th, td {
-    padding: 12px 16px;
+    padding: 6px 12px;  /* Очень компактно */
     text-align: left;
     border-bottom: 1px solid var(--border);
+    font-size: 13px;
 }
 
 th {
@@ -269,27 +270,60 @@ input:focus {
     .card, .ai-section {
         padding: 20px;
     }
+
+    /* На мобильных валюты в одну колонку */
+    .currency-grid {
+        grid-template-columns: 1fr;
+    }
+    /* Погода вертикально на узких экранах */
+    .weather-info {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .weather-item {
+        text-align: left;
+    }
 }
 
+/* Компактный subtitle */
 .card-subtitle {
     color: var(--text-secondary);
-    font-size: 14px;
-    margin-bottom: 16px;
+    font-size: 11px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
+/* Погода - компактный горизонтальный layout */
 .weather-info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .weather-item {
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
+    padding: 0;
+    border-bottom: none;
+    flex: 1;
+    min-width: 100px;
+    text-align: center;
 }
 
-.weather-item:last-child {
-    border-bottom: none;
+.weather-item strong {
+    display: block;
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.weather-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
 }
 
 /* Loading Animation */
