@@ -90,6 +90,119 @@ def get_exchange_rates(base='USD'):
         "INR": {'rate': 83.4, 'flag': '🇮🇳'},
         "BRL": {'rate': 5.12, 'flag': '🇧🇷'},
     }
+
+# ========================
+# Функция для получения погоды через Open-Meteo (без API ключа)
+# ========================
+def get_weather_by_city_name(city='Moscow'):
+    """
+    Получает координаты города и затем погоду
+    Использует Open-Meteo API - без регистрации!
+    """
+    # Маппинг популярных городов к координатам
+    city_coords = {
+        'moscow': {'lat': 55.7558, 'lon': 37.6173, 'name': 'Москва'},
+        'saint petersburg': {'lat': 59.9343, 'lon': 30.3351, 'name': 'Санкт-Петербург'},
+        'london': {'lat': 51.5074, 'lon': -0.1278, 'name': 'Лондон'},
+        'new york': {'lat': 40.7128, 'lon': -74.0060, 'name': 'Нью-Йорк'},
+        'paris': {'lat': 48.8566, 'lon': 2.3522, 'name': 'Париж'},
+        'berlin': {'lat': 52.5200, 'lon': 13.4050, 'name': 'Берлин'},
+        'tokyo': {'lat': 35.6762, 'lon': 139.6503, 'name': 'Токио'},
+        'beijing': {'lat': 39.9042, 'lon': 116.4074, 'name': 'Пекин'},
+        'dubai': {'lat': 25.2048, 'lon': 55.2708, 'name': 'Дубай'},
+        'sydney': {'lat': -33.8688, 'lon': 151.2093, 'name': 'Сидней'},
+    }
+    
+    city_lower = city.lower()
+    
+    # Проверяем, есть ли город в нашей базе
+    if city_lower in city_coords:
+        coords = city_coords[city_lower]
+    else:
+        # По умолчанию Москва
+        coords = city_coords['moscow']
+    
+    return get_weather(coords['lat'], coords['lon'], coords['name'])
+
+
+def get_weather(lat=55.7558, lon=37.6173, city_name='Санкт-Петербург'):
+    """
+    Получает погоду по координатам через Open-Meteo API
+    БЕЗ РЕГИСТРАЦИИ И API КЛЮЧА!
+    """
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        'latitude': lat,
+        'longitude': lon,
+        'current': 'temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,apparent_temperature',
+        'timezone': 'auto'
+    }
+    
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            current = data['current']
+            
+            # Маппинг кодов погоды к описаниям и emoji
+            weather_codes = {
+                0: {'desc': 'Ясно', 'emoji': '☀️'},
+                1: {'desc': 'Преимущественно ясно', 'emoji': '🌤️'},
+                2: {'desc': 'Переменная облачность', 'emoji': '⛅'},
+                3: {'desc': 'Облачно', 'emoji': '☁️'},
+                45: {'desc': 'Туман', 'emoji': '🌫️'},
+                48: {'desc': 'Изморозь', 'emoji': '🌫️'},
+                51: {'desc': 'Легкая морось', 'emoji': '🌦️'},
+                53: {'desc': 'Морось', 'emoji': '🌦️'},
+                55: {'desc': 'Сильная морось', 'emoji': '🌧️'},
+                61: {'desc': 'Небольшой дождь', 'emoji': '🌧️'},
+                63: {'desc': 'Дождь', 'emoji': '🌧️'},
+                65: {'desc': 'Сильный дождь', 'emoji': '⛈️'},
+                71: {'desc': 'Небольшой снег', 'emoji': '🌨️'},
+                73: {'desc': 'Снег', 'emoji': '❄️'},
+                75: {'desc': 'Сильный снег', 'emoji': '❄️'},
+                77: {'desc': 'Снежные зерна', 'emoji': '❄️'},
+                80: {'desc': 'Небольшой ливень', 'emoji': '🌦️'},
+                81: {'desc': 'Ливень', 'emoji': '⛈️'},
+                82: {'desc': 'Сильный ливень', 'emoji': '⛈️'},
+                85: {'desc': 'Снегопад', 'emoji': '🌨️'},
+                86: {'desc': 'Сильный снегопад', 'emoji': '❄️'},
+                95: {'desc': 'Гроза', 'emoji': '⛈️'},
+                96: {'desc': 'Гроза с градом', 'emoji': '⛈️'},
+                99: {'desc': 'Гроза с крупным градом', 'emoji': '⛈️'},
+            }
+            
+            weather_code = current['weather_code']
+            weather_info = weather_codes.get(weather_code, {'desc': 'Неизвестно', 'emoji': '🌤️'})
+            
+            weather_data = {
+                'city': city_name,
+                'temp': round(current['temperature_2m']),
+                'feels_like': round(current['apparent_temperature']),
+                'description': weather_info['desc'],
+                'humidity': current['relative_humidity_2m'],
+                'wind_speed': round(current['wind_speed_10m'], 1),
+                'emoji': weather_info['emoji'],
+                'icon_code': str(weather_code)
+            }
+            
+            return weather_data
+            
+    except Exception as e:
+        print(f"❌ Ошибка получения погоды: {e}")
+    
+    # Fallback данные
+    return {
+        'city': city_name,
+        'temp': 18,
+        'feels_like': 16,
+        'description': 'Облачно',
+        'humidity': 65,
+        'wind_speed': 3.5,
+        'emoji': '☁️',
+        'icon_code': '3'
+    }
+
 # ========================
 # Роуты
 # ========================
@@ -107,9 +220,11 @@ def index():
             # Блокировка истекла - очищаем
             session.pop("blocked_until", None)
             session.pop("login_attempts", None)
+    city = request.args.get('city', 'St. Petersburg')
     rates = get_exchange_rates()
+    weather = get_weather_by_city_name(city)  # Добавляем погоду
     is_authorized = "user" in session
-    return render_template("index.html", rates=rates, is_authorized=is_authorized)
+    return render_template("index.html", rates=rates, weather=weather, is_authorized=is_authorized)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

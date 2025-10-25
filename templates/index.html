@@ -35,20 +35,42 @@
         </table>
     </div>
 
-    <div class="card">
+    <div class="card weather-card">
         <h3>🌤️ Погода</h3>
         <div class="weather-info">
             <div class="weather-item">
                 <strong>Город</strong>
-                <div class="weather-value">Москва</div>
+                <div class="weather-value">{{ weather.emoji }} {{ weather.city }}</div>
             </div>
             <div class="weather-item">
                 <strong>Температура</strong>
-                <div class="weather-value">+18°C</div>
+                <div class="weather-value">{{ weather.temp }}°C</div>
+                <div class="weather-subtitle">Ощущается: {{ weather.feels_like }}°C</div>
             </div>
             <div class="weather-item">
                 <strong>Условия</strong>
-                <div class="weather-value">☁️ Облачно</div>
+                <div class="weather-value">{{ weather.description }}</div>
+            </div>
+        </div>
+        <div class="weather-details">
+            <span class="weather-detail">💧 Влажность: {{ weather.humidity }}%</span>
+            <span class="weather-detail">💨 Ветер: {{ weather.wind_speed }} м/с</span>
+        </div>
+        <div class="weather-city-selector">
+                <form method="GET" style="margin-top: 12px;">
+                    <select name="city" onchange="this.form.submit()" style="width: 100%; padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; font-size: 13px;">
+                        <option value="Moscow" {% if request.args.get('city', 'Moscow') == 'Moscow' %}selected{% endif %}>🇷🇺 Москва</option>
+                        <option value="Saint Petersburg" {% if request.args.get('city') == 'Saint Petersburg' %}selected{% endif %}>🇷🇺 Санкт-Петербург</option>
+                        <option value="London" {% if request.args.get('city') == 'London' %}selected{% endif %}>🇬🇧 Лондон</option>
+                        <option value="New York" {% if request.args.get('city') == 'New York' %}selected{% endif %}>🇺🇸 Нью-Йорк</option>
+                        <option value="Paris" {% if request.args.get('city') == 'Paris' %}selected{% endif %}>🇫🇷 Париж</option>
+                        <option value="Berlin" {% if request.args.get('city') == 'Berlin' %}selected{% endif %}>🇩🇪 Берлин</option>
+                        <option value="Tokyo" {% if request.args.get('city') == 'Tokyo' %}selected{% endif %}>🇯🇵 Токио</option>
+                        <option value="Beijing" {% if request.args.get('city') == 'Beijing' %}selected{% endif %}>🇨🇳 Пекин</option>
+                        <option value="Dubai" {% if request.args.get('city') == 'Dubai' %}selected{% endif %}>🇦🇪 Дубай</option>
+                        <option value="Sydney" {% if request.args.get('city') == 'Sydney' %}selected{% endif %}>🇦🇺 Сидней</option>
+                    </select>
+                </form>
             </div>
         </div>
     </div>
