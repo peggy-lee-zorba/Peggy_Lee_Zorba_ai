@@ -137,4 +137,23 @@
 
         <form method="POST" onsubmit="return validateForm(event)">
             <input type="text" name="username" placeholder="Логин" required autocomplete="username">
-            <input type="password" name="password" placeholder="Пароль" required autocomplete
+            <input type="password" name="password" placeholder="Пароль" required autocomplete="current-password">
+            <button type="submit">Войти</button>
+        </form>
+    </div>
+
+    <script>
+        function validateForm(event) {
+            const username = document.querySelector('input[name="username"]').value;
+            const password = document.querySelector('input[name="password"]').value;
+            
+            if (!username || !password) {
+                alert('Заполните все поля');
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

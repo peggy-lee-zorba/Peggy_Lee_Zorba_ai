@@ -4,8 +4,31 @@ import os
 from datetime import timedelta, datetime
 
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "fallback-secret-2025")
+
+# Критическая проверка наличия секретного ключа
+FLASK_SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
+if not FLASK_SECRET_KEY:
+    raise ValueError(
+        "❌ FLASK_SECRET_KEY не установлен! "
+        "Установите переменную окружения в Render.com: "
+        "Dashboard → Environment → Add Secret File/Variable"
+    )
+app.secret_key = FLASK_SECRET_KEY
 app.permanent_session_lifetime = timedelta(hours=1)
+
+# Принудительное использование HTTPS в production
+@app.before_request
+def enforce_https():
+    if not request.is_secure and os.getenv('FLASK_ENV') != 'development':
+        url = request.url.replace('http://', 'https://', 1)
+        return redirect(url, code=301)
+
+# Установка безопасных cookie
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+)
 
 # Конфигурация контекста
 MAX_CONTEXT_MESSAGES = 6  # Максимальное количество пар сообщений (user + assistant)
@@ -13,9 +36,13 @@ MAX_CONTEXT_LENGTH = 16000  # Максимальная длина контекс
 
 # Конфигурация AI — через OpenRouter.ai
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+if not OPENROUTER_API_KEY:
+    raise ValueError(
+        "❌ OPENROUTER_API_KEY не установлен! "
+        "Получите ключ на https://openrouter.ai/keys и установите в Environment"
+    )
+
 AI_ENDPOINT = "https://openrouter.ai/api/v1/chat/completions"
-#AI_MODEL = "qwen/qwen3-coder:free"
-#AI_MODEL = os.getenv("AI_MODEL", "qwen/qwen3-coder:free")
 AI_MODEL = os.getenv("AI_MODEL", "deepseek/deepseek-chat")
 
 # Авторизация
@@ -51,8 +78,15 @@ def index():
     if "blocked_until" in session:
         blocked_until = datetime.fromisoformat(session["blocked_until"])
         if datetime.now() < blocked_until:
-            return render_template("login.html", error="⛔ Доступ заблокирован. Попробуйте через 30 минут.")
-
+            remaining_time = (blocked_until - datetime.now()).total_seconds() / 60
+            return render_template(
+                "login.html", 
+                error=f"⛔ Доступ заблокирован. Попробуйте через {int(remaining_time)} минут."
+            )
+        else:
+            # Блокировка истекла - очищаем
+            session.pop("blocked_until", None)
+            session.pop("login_attempts", None)
     rates = get_exchange_rates()
     is_authorized = "user" in session
     return render_template("index.html", rates=rates, is_authorized=is_authorized)
@@ -105,10 +139,43 @@ def login():
     # GET запрос — показываем форму
     return render_template("login.html")
 
+# Хранилище для rate limiting (в production используйте Redis)
+from collections import defaultdict
+from time import time
+
+request_timestamps = defaultdict(list)
+MAX_AI_REQUESTS_PER_HOUR = 20
+
+def check_rate_limit(user_id):
+    """Проверка лимита запросов (20 в час)"""
+    now = time()
+    hour_ago = now - 3600
+    
+    # Очищаем старые запросы
+    request_timestamps[user_id] = [
+        ts for ts in request_timestamps[user_id] if ts > hour_ago
+    ]
+    
+    # Проверяем лимит
+    if len(request_timestamps[user_id]) >= MAX_AI_REQUESTS_PER_HOUR:
+        return False
+    
+    # Добавляем текущий запрос
+    request_timestamps[user_id].append(now)
+    return True
+
 @app.route("/ask-ai", methods=["POST"])
 def ask_ai():
     if "user" not in session:
         return jsonify({"error": "Unauthorized"}), 401
+    
+    if not check_rate_limit(session["user"]):
+        return jsonify({
+            "error": "⏱️ Превышен лимит запросов (20 в час). Попробуйте позже."
+        }), 429
+
+    if not OPENROUTER_API_KEY:
+        return jsonify({"error": "OpenRouter API key missing"}), 500
 
     if not OPENROUTER_API_KEY:
         return jsonify({"error": "OpenRouter API key missing"}), 500
@@ -124,8 +191,8 @@ def ask_ai():
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://peggy-lee-zorba-ai.onrender.com",
-        "X-Title": "Business Analytics AI Proxy",
+        "HTTP-Referer": os.getenv("APP_URL", "https://business-analytics-dashboard.com"),
+        "X-Title": "Business Analytics Dashboard",
     }
 
     # Системный промпт для бизнес-аналитики

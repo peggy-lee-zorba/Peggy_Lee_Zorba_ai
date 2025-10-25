@@ -47,7 +47,7 @@ async function submitLogin() {
 }
 
 // Отправка запроса к ИИ
-async function askAI() {
+async function askAI(event) {
     const input = document.getElementById("userInput")?.value;
     if (!input?.trim()) return alert("Введите вопрос!");
 
