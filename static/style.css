@@ -1,17 +1,17 @@
 :root {
-    --primary: #5B8DEF;
-    --primary-dark: #4A7DD9;
-    --secondary: #F368E0;
-    --success: #26DE81;
-    --warning: #FED330;
-    --danger: #FC5C65;
-    --background: #F8F9FD;
+    --primary: #6C7A9B;
+    --primary-dark: #5A6880;
+    --secondary: #9B8FB5;
+    --success: #7FB685;
+    --warning: #E8C468;
+    --danger: #D88B8B;
+    --background: #F5F6F8;
     --surface: #FFFFFF;
-    --text-primary: #2D3561;
-    --text-secondary: #778CA3;
-    --border: #EEF1F7;
-    --shadow: 0 8px 16px rgba(93, 141, 239, 0.1);
-    --shadow-lg: 0 16px 32px rgba(93, 141, 239, 0.15);
+    --text-primary: #2D3748;
+    --text-secondary: #718096;
+    --border: #E2E8F0;
+    --shadow: 0 4px 12px rgba(108, 122, 155, 0.08);
+    --shadow-lg: 0 8px 24px rgba(108, 122, 155, 0.12);
 }
 
 * {
@@ -85,7 +85,7 @@ body {
 
 .card {
     background: var(--surface);
-    padding: 24px;
+    padding: 16px 20px;  /* Было 24px */
     border-radius: 20px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
@@ -99,9 +99,9 @@ body {
 }
 
 .card h3 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;  /* Было 1.2rem */
     font-weight: 700;
-    margin-bottom: 16px;
+    margin-bottom: 10px;  /* Было 16px */
     color: var(--text-primary);
     display: flex;
     align-items: center;
@@ -113,13 +113,13 @@ table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    margin-top: 8px;
+    margin-top: 4px;  /* Было 8px */
 }
 
 th, td {
-    padding: 12px 16px;
+    padding: 8px 12px;  /* Было 12px 16px */
     text-align: left;
-    font-size: 14px;
+    font-size: 13px;  /* Было 14px */
 }
 
 th {
@@ -162,10 +162,10 @@ tbody tr:hover {
 /* Weather - Modern Flat */
 .weather-info {
     display: flex;
-    gap: 20px;
+    gap: 12px;  /* Было 20px */
     flex-wrap: wrap;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
+    margin-bottom: 10px;  /* Было 16px */
+    padding-bottom: 10px;  /* Было 16px */
     border-bottom: 2px solid var(--border);
 }
 
@@ -173,7 +173,7 @@ tbody tr:hover {
     flex: 1;
     min-width: 100px;
     text-align: center;
-    padding: 12px;
+    padding: 8px;  /* Было 12px */
     background: var(--background);
     border-radius: 12px;
 }
@@ -188,7 +188,7 @@ tbody tr:hover {
 }
 
 .weather-value {
-    font-size: 18px;
+    font-size: 16px;  /* Было 18px */
     font-weight: 700;
     color: var(--text-primary);
 }
@@ -201,14 +201,14 @@ tbody tr:hover {
 
 .weather-details {
     display: flex;
-    gap: 16px;
+    gap: 10px;  /* Было 16px */
     flex-wrap: wrap;
-    font-size: 13px;
+    font-size: 12px;  /* Было 13px */
     color: var(--text-secondary);
 }
 
 .weather-detail {
-    padding: 8px 16px;
+    padding: 6px 12px;  /* Было 8px 16px */
     background: var(--background);
     border-radius: 20px;
     font-weight: 500;
@@ -391,10 +391,10 @@ input:focus {
 /* Card subtitle */
 .card-subtitle {
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 11px;  /* Было 12px */
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;  /* Было 12px */
     font-weight: 600;
 }
 
@@ -474,59 +474,75 @@ html {
     color: white;
 }
 
-.card-accent-blue h3,
-.card-accent-blue .card-subtitle,
-.card-accent-blue th,
-.card-accent-blue td,
-.card-accent-blue .currency-code {
-    color: white !important;
+/* Акцентные карточки - приглушенные тона */
+.card-accent-blue {
+    background: linear-gradient(135deg, #E8EBF0 0%, #D9DDE6 100%);
+    border: 2px solid #C5CBD7;
+}
+
+.card-accent-blue h3 {
+    color: var(--primary) !important;
+}
+
+.card-accent-blue .card-subtitle {
+    color: var(--text-secondary) !important;
 }
 
 .card-accent-blue th {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(108, 122, 155, 0.08);
+    color: var(--text-secondary) !important;
 }
 
 .card-accent-blue td {
-    border-bottom-color: rgba(255, 255, 255, 0.2);
+    border-bottom-color: #D9DDE6;
+    color: var(--text-primary) !important;
+}
+
+.card-accent-blue .currency-code {
+    color: var(--text-primary) !important;
 }
 
 .card-accent-blue tbody tr:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(108, 122, 155, 0.05);
 }
 
 .card-accent-purple {
-    background: linear-gradient(135deg, #F368E0 0%, #B06AB3 100%);
-    color: white;
+    background: linear-gradient(135deg, #F0EBF3 0%, #E6DDE8 100%);
+    border: 2px solid #D4C5D9;
 }
 
-.card-accent-purple h3,
-.card-accent-purple strong,
-.card-accent-purple .weather-value,
-.card-accent-purple .weather-subtitle,
+.card-accent-purple h3 {
+    color: var(--secondary) !important;
+}
+
+.card-accent-purple strong {
+    color: var(--text-secondary) !important;
+}
+
+.card-accent-purple .weather-value {
+    color: var(--text-primary) !important;
+}
+
+.card-accent-purple .weather-subtitle {
+    color: var(--text-secondary) !important;
+}
+
 .card-accent-purple .weather-detail {
-    color: white !important;
+    background: rgba(155, 143, 181, 0.15);
+    color: var(--text-primary) !important;
 }
 
 .card-accent-purple .weather-item {
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.card-accent-purple .weather-details {
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    padding-top: 16px;
-}
-
-.card-accent-purple .weather-detail {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(155, 143, 181, 0.1);
 }
 
 .card-accent-purple select {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.3);
+    background: var(--surface);
+    color: var(--text-primary);
+    border-color: #D4C5D9;
 }
 
 .card-accent-purple select option {
-    background: #F368E0;
-    color: white;
+    background: var(--surface);
+    color: var(--text-primary);
 }
