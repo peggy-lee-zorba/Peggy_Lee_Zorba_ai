@@ -16,12 +16,6 @@ if not FLASK_SECRET_KEY:
 app.secret_key = FLASK_SECRET_KEY
 app.permanent_session_lifetime = timedelta(hours=1)
 
-# Принудительное использование HTTPS в production
-@app.before_request
-def enforce_https():
-    if not request.is_secure and os.getenv('FLASK_ENV') != 'development':
-        url = request.url.replace('http://', 'https://', 1)
-        return redirect(url, code=301)
 
 # Установка безопасных cookie
 app.config.update(
