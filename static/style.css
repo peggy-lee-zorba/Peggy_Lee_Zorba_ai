@@ -117,7 +117,7 @@ table {
 }
 
 th, td {
-    padding: 8px 12px;  /* Было 12px 16px */
+    padding: 4px 12px;  /* Уменьшен вертикальный padding для компактности */
     text-align: left;
     font-size: 13px;  /* Было 14px */
 }
