@@ -85,7 +85,7 @@ body {
 
 .card {
     background: var(--surface);
-    padding: 16px 20px;  /* Было 24px */
+    padding: 12px 16px;  /* Уменьшено для компактности */
     border-radius: 20px;
     box-shadow: var(--shadow);
     transition: all 0.3s ease;
@@ -101,7 +101,7 @@ body {
 .card h3 {
     font-size: 1.1rem;  /* Было 1.2rem */
     font-weight: 700;
-    margin-bottom: 10px;  /* Было 16px */
+    margin-bottom: 6px;  /* Уменьшено для компактности */
     color: var(--text-primary);
     display: flex;
     align-items: center;
@@ -164,8 +164,8 @@ tbody tr:hover {
     display: flex;
     gap: 12px;  /* Было 20px */
     flex-wrap: wrap;
-    margin-bottom: 10px;  /* Было 16px */
-    padding-bottom: 10px;  /* Было 16px */
+    margin-bottom: 6px;  /* Уменьшено для компактности */
+    padding-bottom: 6px;  /* Уменьшено для компактности */
     border-bottom: 2px solid var(--border);
 }
 
@@ -226,7 +226,7 @@ select {
     background: var(--surface);
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 12px;
+    margin-top: 8px;  /* Уменьшено для компактности */
 }
 
 select:hover {
@@ -394,7 +394,7 @@ input:focus {
     font-size: 11px;  /* Было 12px */
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 8px;  /* Было 12px */
+    margin-bottom: 4px;  /* Уменьшено для компактности */
     font-weight: 600;
 }
 
