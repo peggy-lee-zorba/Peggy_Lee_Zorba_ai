@@ -109,7 +109,7 @@ def get_weather_by_city_name(city='St. Petersburg'):
         'berlin': {'lat': 52.5200, 'lon': 13.4050, 'name': 'Берлин'},
         'tokyo': {'lat': 35.6762, 'lon': 139.6503, 'name': 'Токио'},
         'beijing': {'lat': 39.9042, 'lon': 116.4074, 'name': 'Пекин'},
-        'kannelyarvi': {'lat': 29.363479, 'lon': 60.339183, 'name': 'Каннельярви'},
+        'kannelyarvi': {'lat': 29.363512, 'lon': 60.339142, 'name': 'Каннельярви'},
     }
     
     city_lower = city.lower()
